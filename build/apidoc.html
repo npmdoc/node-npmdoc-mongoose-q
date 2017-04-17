@@ -1,0 +1,289 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/iolo/mongoose-q#readme"
+
+    >mongoose-q (v0.1.0)</a>
+</h1>
+<h4>kriskowal's Q support for mongoose</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-q">module mongoose-q</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-q.mongoose-q">
+            function <span class="apidocSignatureSpan"></span>mongoose-q
+            <span class="apidocSignatureSpan">(mongoose, options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-q.qualify">
+            function <span class="apidocSignatureSpan">mongoose-q.</span>qualify
+            <span class="apidocSignatureSpan">(qLib, obj, funcNames, funcNameMapper, spread)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-q.toString">
+            function <span class="apidocSignatureSpan">mongoose-q.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-q.qualify">module mongoose-q.qualify</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-q.qualify.qualify">
+            function <span class="apidocSignatureSpan">mongoose-q.</span>qualify
+            <span class="apidocSignatureSpan">(qLib, obj, funcNames, funcNameMapper, spread)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.mongoose-q.toString">module mongoose-q.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.mongoose-q.toString.toString">
+            function <span class="apidocSignatureSpan">mongoose-q.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-q" id="apidoc.module.mongoose-q">module mongoose-q</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-q.mongoose-q" id="apidoc.element.mongoose-q.mongoose-q">
+        function <span class="apidocSignatureSpan"></span>mongoose-q
+        <span class="apidocSignatureSpan">(mongoose, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function mongooseQ(mongoose, options) {
+  mongoose = mongoose || require(&#x27;mongoose&#x27;);
+  options = options || {};
+  var prefix = options.prefix || &#x27;&#x27;;
+  var suffix = options.suffix || &#x27;Q&#x27;;
+  var mapper = options.mapper || function (funcName) {
+    return prefix + funcName + suffix;
+  };
+  var qLib = options.q || require(&#x27;q&#x27;);
+
+  var spread = options.spread;
+  var funcNames = options.funcNames || require(&#x27;./func_names&#x27;);
+  // avoid duplicated application for custom mapper function...
+  var applied = require(&#x27;crypto&#x27;).createHash(&#x27;md5&#x27;).update(prefix+suffix+mapper+spread).digest(&#x27;hex&#x27;);
+  if (mongoose[&#x27;__q_applied_&#x27; + applied]) {
+    return mongoose;
+  }
+
+  qualify(qLib, mongoose.Model, funcNames.MODEL_STATICS, mapper, spread);
+  qualify(qLib, mongoose.Model.prototype, funcNames.MODEL_METHODS, mapper, spread);
+  qualify(qLib, mongoose.Query.prototype, funcNames.QUERY_METHODS, mapper, spread);
+  qualify(qLib, mongoose.Aggregate.prototype, funcNames.AGGREGATE_METHODS, mapper, spread);
+
+  mongoose[&#x27;__q_applied_&#x27; + applied] = true;
+  return mongoose;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-q.qualify" id="apidoc.element.mongoose-q.qualify">
+        function <span class="apidocSignatureSpan">mongoose-q.</span>qualify
+        <span class="apidocSignatureSpan">(qLib, obj, funcNames, funcNameMapper, spread)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function qualify(qLib, obj, funcNames, funcNameMapper, spread) {
+  funcNames.forEach(function (funcName) {
+    if (typeof(obj[funcName]) !== &#x27;function&#x27;) {
+      DEBUG &#x26;&#x26; debug(&#x27;***skip*** function not found:&#x27;, funcName);
+      return;
+    }
+    var mappedFuncName = funcNameMapper(funcName);
+    DEBUG &#x26;&#x26; debug(&#x27;wrap function:&#x27;, funcName, &#x27;--&#x3e;&#x27;, mappedFuncName);
+    obj[mappedFuncName] = function () {
+      var d = qLib.defer();
+      var args = apslice.call(arguments);
+      args.push(function (err, result) {
+        if (err) {
+          return d.reject(err);
+        }
+        // with &#x27;spread&#x27; option: returns &#x27;all&#x27; result with &#x27;spread&#x27; only for multiple result
+        if (spread &#x26;&#x26; arguments.length &#x3e; 2) {
+          return d.resolve(apslice.call(arguments, 1));
+        }
+        // without &#x27;spread&#x27; option: returns the &#x27;first&#x27; result only and ignores following result
+        return d.resolve(result);
+      });
+      // fix https://github.com/iolo/mongoose-q/issues/1
+      // mongoose patches some instance methods after instantiation. :(
+      this[funcName].apply(this, args);
+      return d.promise;
+    };
+  });
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-q.toString" id="apidoc.element.mongoose-q.toString">
+        function <span class="apidocSignatureSpan">mongoose-q.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-q.qualify" id="apidoc.module.mongoose-q.qualify">module mongoose-q.qualify</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-q.qualify.qualify" id="apidoc.element.mongoose-q.qualify.qualify">
+        function <span class="apidocSignatureSpan">mongoose-q.</span>qualify
+        <span class="apidocSignatureSpan">(qLib, obj, funcNames, funcNameMapper, spread)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function qualify(qLib, obj, funcNames, funcNameMapper, spread) {
+  funcNames.forEach(function (funcName) {
+    if (typeof(obj[funcName]) !== &#x27;function&#x27;) {
+      DEBUG &#x26;&#x26; debug(&#x27;***skip*** function not found:&#x27;, funcName);
+      return;
+    }
+    var mappedFuncName = funcNameMapper(funcName);
+    DEBUG &#x26;&#x26; debug(&#x27;wrap function:&#x27;, funcName, &#x27;--&#x3e;&#x27;, mappedFuncName);
+    obj[mappedFuncName] = function () {
+      var d = qLib.defer();
+      var args = apslice.call(arguments);
+      args.push(function (err, result) {
+        if (err) {
+          return d.reject(err);
+        }
+        // with &#x27;spread&#x27; option: returns &#x27;all&#x27; result with &#x27;spread&#x27; only for multiple result
+        if (spread &#x26;&#x26; arguments.length &#x3e; 2) {
+          return d.resolve(apslice.call(arguments, 1));
+        }
+        // without &#x27;spread&#x27; option: returns the &#x27;first&#x27; result only and ignores following result
+        return d.resolve(result);
+      });
+      // fix https://github.com/iolo/mongoose-q/issues/1
+      // mongoose patches some instance methods after instantiation. :(
+      this[funcName].apply(this, args);
+      return d.promise;
+    };
+  });
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.mongoose-q.toString" id="apidoc.module.mongoose-q.toString">module mongoose-q.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.mongoose-q.toString.toString" id="apidoc.element.mongoose-q.toString.toString">
+        function <span class="apidocSignatureSpan">mongoose-q.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function toString() { [native code] }</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
