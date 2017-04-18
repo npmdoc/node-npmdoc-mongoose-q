@@ -1,4 +1,7 @@
-# api documentation for  [mongoose-q (v0.1.0)](https://github.com/iolo/mongoose-q#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-mongoose-q.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-mongoose-q) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-mongoose-q.svg)](https://travis-ci.org/npmdoc/node-npmdoc-mongoose-q)
+# npmdoc-mongoose-q
+
+#### api documentation for  [mongoose-q (v0.1.0)](https://github.com/iolo/mongoose-q#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-mongoose-q.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-mongoose-q) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-mongoose-q.svg)](https://travis-ci.org/npmdoc/node-npmdoc-mongoose-q)
+
 #### kriskowal's Q support for mongoose
 
 [![NPM](https://nodei.co/npm/mongoose-q.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/mongoose-q)
